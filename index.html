@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="pageTitle">babejeanstore ♡</title>
+  
+  <meta property="og:title" content="babejeanstore ♡">
+  <meta property="og:description" content="Welcome to babejean Store ! ♡">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --pastel-pink: #f9a8d4;
+      --pastel-blue: #bae6fd;
+      --pastel-lavender: #ddd6fe;
+      --pink-main: #f47291;
+      --blue-main: #38bdf8;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --border-pink: #ffd6e0;
+      --border-soft: #e0e7ff;
+      --text-main: #3d354a;
+      --text-muted: #7c728e;
+      --glow-soft: 0 10px 28px rgba(244, 114, 145, 0.18), 0 4px 15px rgba(56, 189, 248, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', 'Mitr', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #e0f2fe 0%, #fdf2f8 40%, #fef9c3 70%, #ede9fe 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Welcome Gate แตะเพื่อเริ่มเพลงทันที */
+    .enter-gate {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 245, 247, 0.94);
+      backdrop-filter: blur(14px);
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .enter-gate.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    
+    .enter-card {
+      background: #ffffff;
+      border: 2px solid var(--pastel-pink);
+      border-radius: 28px;
+      padding: 30px 24px;
+      text-align: center;
+      max-width: 320px;
+      width: 85%;
+      box-shadow: var(--glow-soft);
+      animation: popScale 0.35s ease;
+    }
+    @keyframes popScale { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .enter-btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 22px;
+      border: none;
+      background: linear-gradient(135deg, var(--pastel-pink), var(--blue-main));
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.35);
+    }
+
+    /* ลูกเล่นลอย 🤍 & PNG */
+    .floating-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .float-item {
+      position: absolute;
+      bottom: -80px;
+      animation: floatUp 12s linear infinite;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .float-item-png {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(244, 114, 145, 0.3));
+    }
+    .float-item-emoji {
+      font-size: 24px;
+      filter: drop-shadow(0 4px 10px rgba(255, 255, 255, 0.8));
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.9; }
+      85% { opacity: 0.9; }
+      100% { transform: translateY(-115vh) rotate(360deg); opacity: 0; }
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 2;
+      padding-bottom: 70px;
+    }
+
+    /* แบนเนอร์ */
+    .banner-box {
+      width: 100%;
+      height: 160px;
+      background: #f1f5f9;
+      overflow: hidden;
+      position: relative;
+      border-bottom: 1.5px solid var(--border-pink);
+    }
+    .banner-box img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* โปรไฟล์และกรอบ Discord */
+    .profile-section {
+      padding: 0 18px;
+      margin-top: -55px;
+      position: relative;
+    }
+    .profile-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 102px;
+      height: 102px;
+      display: inline-block;
+    }
+    .avatar-img {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1;
+      border: 3.5px solid #ffffff;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(244, 114, 145, 0.3);
+    }
+    .discord-frame {
+      position: absolute;
+      inset: -4px;
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.1));
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-weight: 700; font-size: 16px; color: var(--pink-main); }
+    .stat-lbl { font-size: 11px; color: var(--text-muted); }
+
+    .bio-box { margin-top: 14px; }
+    .bio-username {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--pink-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bio-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 8px;
+      white-space: pre-line;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 10px 14px;
+      border-radius: 18px;
+      border: 1px dashed var(--border-pink);
+    }
+
+    /* ปุ่มเพลง */
+    .music-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 6px 16px;
+      background: #ffffff;
+      border: 1.5px solid var(--border-pink);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--pink-main);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(244, 114, 145, 0.18);
+      font-weight: 600;
+    }
+
+    /* ไฮไลท์สตอรี่ */
+    .highlights-scroll {
+      display: flex;
+      gap: 14px;
+      padding: 18px 18px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .highlights-scroll::-webkit-scrollbar { display: none; }
+    
+    .highlight-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .highlight-ring {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      padding: 2.5px;
+      background: linear-gradient(135deg, var(--pastel-pink), var(--blue-main));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--glow-soft);
+    }
+    .highlight-thumb {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffffff;
+      background: #fff;
+    }
+    .highlight-name {
+      font-size: 11.5px;
+      color: var(--text-main);
+      max-width: 72px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    /* 4 แท็บเมนู */
+    .tabs-header {
+      display: flex;
+      border-top: 1.5px solid var(--border-pink);
+      border-bottom: 1.5px solid var(--border-pink);
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 0;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--pink-main);
+      border-bottom: 2.5px solid var(--pink-main);
+      font-weight: 700;
+    }
+
+    .tab-content { display: none; padding: 16px; }
+    .tab-content.active { display: block; }
+
+    /* แท็บ 1: Home Grid (Posts) */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+    .post-card {
+      position: relative;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      background: #fdf2f8;
+      cursor: pointer;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .post-card img { width: 100%; height: 100%; object-fit: cover; }
+    .post-card:active { transform: scale(0.97); }
+
+    /* แท็บ 2: Review */
+    .review-section { display: flex; flex-direction: column; gap: 14px; }
+    .review-form-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-pink);
+      border-radius: 22px;
+      padding: 18px 16px;
+      box-shadow: var(--glow-soft);
+      backdrop-filter: blur(10px);
+    }
+    .form-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--pink-main);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .star-select-box { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease;
+    }
+    .star-btn svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffd8e1;
+      stroke: #fca5b9;
+      stroke-width: 1.2;
+      transition: fill 0.15s, stroke 0.15s, transform 0.15s;
+    }
+    .star-btn.active svg {
+      fill: #f47291;
+      stroke: #e05879;
+      transform: scale(1.1);
+      filter: drop-shadow(0 2px 6px rgba(244, 114, 145, 0.4));
+    }
+
+    .review-input, .review-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-pink);
+      outline: none;
+      font-size: 13px;
+      background: #fff;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .review-input:focus, .review-textarea:focus { border-color: var(--pink-main); }
+    
+    .review-submit-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 18px;
+      border: none;
+      background: linear-gradient(135deg, var(--pastel-pink), var(--blue-main));
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+    }
+
+    .review-list { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+    .review-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-pink);
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 14px rgba(244, 114, 145, 0.08);
+      backdrop-filter: blur(8px);
+    }
+    .review-head { display: flex; justify-content: space-between; align-items: center; }
+    .review-name { font-size: 13.5px; font-weight: 700; color: var(--text-main); }
+    .review-stars-box { display: flex; gap: 3px; }
+    .review-stars-box svg { width: 14px; height: 14px; fill: #f47291; }
+    .review-msg {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    /* แท็บ 3: Details */
+    .details-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-pink);
+      border-radius: 22px;
+      padding: 20px 18px;
+      line-height: 1.75;
+      font-size: 13.5px;
+      color: var(--text-main);
+      box-shadow: var(--glow-soft);
+      backdrop-filter: blur(10px);
+      text-align: center;
+    }
+    .details-link-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      border: 1.5px solid var(--pastel-blue);
+      border-radius: 18px;
+      padding: 14px 18px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 14px;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.15);
+      transition: transform 0.2s;
+    }
+    .details-link-card:active { transform: scale(0.97); }
+
+    /* แท็บ 4: Contact */
+    .contact-box { display: flex; flex-direction: column; gap: 12px; }
+    .contact-card-link {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-pink);
+      border-radius: 20px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 14.5px;
+      box-shadow: var(--glow-soft);
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s;
+    }
+    .contact-card-link:active { transform: scale(0.97); }
+
+    /* Story Fullscreen Viewer (รองรับภาพชัด HD ไม่จำกัด) */
+    .story-modal {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999999;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .story-modal.show { display: flex; }
+    
+    .story-bars { display: flex; gap: 4px; padding: 12px 14px 6px; z-index: 10; }
+    .story-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.35); border-radius: 2px; overflow: hidden; }
+    .story-bar-fill { width: 0%; height: 100%; background: #fff; transition: width 0.1s linear; }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 14px;
+      z-index: 10;
+      color: #fff;
+    }
+    .story-user { font-size: 13.5px; font-weight: 700; }
+    .story-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 26px;
+      cursor: pointer;
+      padding: 2px 8px;
+    }
+
+    .story-body {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .story-body img {
+      width: 100%;
+      height: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
+    }
+    .story-nav-btn { position: absolute; top: 0; bottom: 0; width: 45%; z-index: 5; cursor: pointer; }
+    .story-nav-left { left: 0; }
+    .story-nav-right { right: 0; }
+
+    /* Post Modal */
+    .post-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      z-index: 999999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .post-modal.show { display: flex; }
+    .post-modal-card {
+      background: #fff;
+      border: 2px solid var(--pastel-pink);
+      border-radius: 24px;
+      overflow: hidden;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .post-modal-card img { width: 100%; max-height: 380px; object-fit: cover; }
+    .post-modal-body { padding: 16px; }
+    .post-modal-caption { font-size: 13px; color: var(--text-muted); line-height: 1.55; white-space: pre-line; }
+    .post-modal-close {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 16px;
+      border: none;
+      background: #fff0f3;
+      color: var(--pink-main);
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- เข้าเว็บเพื่อเล่นเพลง -->
+  <div class="enter-gate" id="enterGate" onclick="unlockAudioAndEnter()">
+    <div class="enter-card">
+      <h2 style="font-size: 19px; color: var(--pink-main);" id="gateTitle">babejeanstore ♡</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">แตะเพื่อเข้าชมร้านค้าและเริ่มเล่นเพลง</p>
+      <button type="button" class="enter-btn">Go to website ♡</button>
+    </div>
+  </div>
+
+  <!-- เครื่องเล่นเพลง (Camouflage - aespa) -->
+  <audio id="bgMusic" loop preload="auto" src="https://file.garden/asG8Gt-rqWIpi3II/aespa%20'Camouflage'%20Lyrics%20(%E1%84%8B%E1%85%A6%E1%84%89%E1%85%B3%E1%84%91%E1%85%A1%20Camouflage%20%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1)%20%5BColor%20Coded%20Han_Rom_Eng%5D%20ShadowByYoongi.mp3"></audio>
+
+  <!-- เลเยอร์ลูกเล่นลอย 🤍 และ PNG -->
+  <div class="floating-layer" id="floatingLayer"></div>
+
+  <div class="wrapper">
+    <!-- แบนเนอร์ -->
+    <div class="banner-box">
+      <img id="bannerImg" src="https://files.catbox.moe/cj2ioh.jpeg" alt="Banner">
+    </div>
+
+    <!-- ส่วนโปรไฟล์และกรอบ -->
+    <div class="profile-section">
+      <div class="profile-row">
+        <div class="avatar-wrapper">
+          <img id="avatarImg" class="avatar-img" src="https://files.catbox.moe/ktnhex.jpeg" alt="Profile">
+          <img id="discordFrameImg" class="discord-frame" src="https://files.catbox.moe/m1x3mr.png" alt="Discord Frame">
+        </div>
+        <div class="stats-row">
+          <div class="stat-item"><div class="stat-num" id="postCount">0</div><div class="stat-lbl">โพสต์</div></div>
+          <div class="stat-item"><div class="stat-num" id="highlightCount">0</div><div class="stat-lbl">ไฮไลท์</div></div>
+          <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">รีวิวดีเยี่ยม</div></div>
+        </div>
+      </div>
+
+      <div class="bio-box">
+        <div class="bio-username" id="usernameText">babejeanstore ♡</div>
+        <div class="bio-desc" id="userBio">Welcome to babejean Store ! ♡</div>
+        
+        <div class="music-bar" onclick="toggleMusic()">
+          <span id="musicText">play music !</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ไฮไลท์สตอรี่ -->
+    <div class="highlights-scroll" id="highlightsBar"></div>
+
+    <!-- 4 แท็บเมนู -->
+    <div class="tabs-header">
+      <button class="tab-btn active" onclick="switchTab('home')">Home</button>
+      <button class="tab-btn" onclick="switchTab('review')">Review</button>
+      <button class="tab-btn" onclick="switchTab('details')">Details</button>
+      <button class="tab-btn" onclick="switchTab('contact')">Contact</button>
+    </div>
+
+    <!-- แท็บ 1: Home (โพสต์) -->
+    <div class="tab-content active" id="tab-home">
+      <div class="posts-grid" id="postsGrid"></div>
+    </div>
+
+    <!-- แท็บ 2: Review -->
+    <div class="tab-content" id="tab-review">
+      <div class="review-section">
+        <div class="review-form-card">
+          <div class="form-title">เขียนรีวิวให้ร้านค้า ♡</div>
+          
+          <div class="star-select-box">
+            <button type="button" class="star-btn active" onclick="setStars(1)">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </button>
+            <button type="button" class="star-btn active" onclick="setStars(2)">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </button>
+            <button type="button" class="star-btn active" onclick="setStars(3)">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </button>
+            <button type="button" class="star-btn active" onclick="setStars(4)">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </button>
+            <button type="button" class="star-btn active" onclick="setStars(5)">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </button>
+          </div>
+
+          <input type="text" id="custName" class="review-input" placeholder="ชื่อของคุณ">
+          <textarea id="custMsg" class="review-textarea" rows="3" placeholder="เขียนข้อความรีวิวได้เลยนะคะ ♡"></textarea>
+          <button type="button" class="review-submit-btn" id="submitReviewBtn" onclick="submitCustomerReview()">ส่งรีวิว ♡</button>
+        </div>
+
+        <div class="review-list" id="feedbackList"></div>
+      </div>
+    </div>
+
+    <!-- แท็บ 3: Details -->
+    <div class="tab-content" id="tab-details">
+      <div class="details-box">
+        <div style="font-weight: 700; color: var(--pink-main); margin-bottom: 6px;">example work ⬇️</div>
+        <a href="https://drive.google.com/drive/folders/1809dQnoaVJlvUHhzGbXJHmJ_Ai-JXkYu" target="_blank" class="details-link-card" id="detailsLinkBox">
+          <span>📁 ตัวอย่างผลงานร้านค้า (Google Drive)</span>
+          <span style="color: var(--blue-main);">➔</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- แท็บ 4: Contact -->
+    <div class="tab-content" id="tab-contact">
+      <div class="contact-box" id="contactLinks">
+        <a href="https://lin.ee/o8VdHV5" target="_blank" class="contact-card-link" id="contactLink1">
+          <span>💬 line office ( @841xabwb )</span>
+          <span style="color: var(--blue-main);">➔</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Fullscreen Viewer -->
+  <div class="story-modal" id="storyModal">
+    <div class="story-bars" id="storyBars"></div>
+    <div class="story-header">
+      <div class="story-user">
+        <span id="storyTitleText">Highlight</span>
+      </div>
+      <button class="story-close" onclick="closeStory()">×</button>
+    </div>
+    <div class="story-body">
+      <div class="story-nav-btn story-nav-left" onclick="prevStory()"></div>
+      <img id="storyActiveImg" src="" alt="Story Image">
+      <div class="story-nav-btn story-nav-right" onclick="nextStory()"></div>
+    </div>
+  </div>
+
+  <!-- Post Detail Modal -->
+  <div class="post-modal" id="postModal" onclick="closePostModal()">
+    <div class="post-modal-card" onclick="event.stopPropagation()">
+      <img id="postModalImg" src="">
+      <div class="post-modal-body">
+        <div class="post-modal-caption" id="postModalCaption"></div>
+        <button class="post-modal-close" onclick="closePostModal()">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpAGDSy1NRgmLV_g7qJrCpwOhU9MrfQyY",
+      authDomain: "benefitie.firebaseapp.com",
+      projectId: "benefitie",
+      storageBucket: "benefitie.firebasestorage.app",
+      messagingSenderId: "270365672215",
+      appId: "1:270365672215:web:230d1491091e26ce83ed52"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const DB_SITE = "babejeanstore_site";
+    const DB_REVIEWS = "babejeanstore_feedback";
+
+    let currentHighlights = [];
+    let currentPosts = [];
+    let activeHighlightIdx = 0;
+    let activeStoryImgIdx = 0;
+    let storyTimer = null;
+    let selectedRating = 5;
+
+    // 1. ดึงข้อมูล config หลัก
+    db.collection(DB_SITE).doc("config").onSnapshot(doc => {
+      if (doc.exists) {
+        const d = doc.data();
+        if (d.siteTitle) {
+          document.getElementById("pageTitle").textContent = d.siteTitle;
+          document.getElementById("gateTitle").textContent = d.siteTitle;
+        }
+        if (d.username) document.getElementById("usernameText").textContent = d.username;
+        if (d.bio) document.getElementById("userBio").textContent = d.bio;
+        if (d.bannerImg) document.getElementById("bannerImg").src = d.bannerImg;
+        if (d.profileImg) document.getElementById("avatarImg").src = d.profileImg;
+        if (d.discordFrame) document.getElementById("discordFrameImg").src = d.discordFrame;
+
+        if (d.detailsUrl) document.getElementById("detailsLinkBox").href = d.detailsUrl;
+        if (d.contactName) document.querySelector("#contactLink1 span").textContent = d.contactName;
+        if (d.contactUrl) document.getElementById("contactLink1").href = d.contactUrl;
+
+        if (d.posts && Array.isArray(d.posts)) {
+          currentPosts = d.posts;
+          renderPosts(d.posts);
+        }
+
+        if (d.musicUrl && !music.src.endsWith(d.musicUrl)) {
+          music.src = d.musicUrl;
+          music.play().catch(() => {});
+        }
+      }
+    });
+
+    // 2. ดึงไฮไลท์จาก Sub-collection (ภาพ HD ไม่จำกัด)
+    db.collection(DB_SITE).doc("config")
+      .collection("highlights_list").orderBy("order", "asc").onSnapshot(snap => {
+        if (!snap.empty) {
+          currentHighlights = snap.docs.map(doc => doc.data());
+        } else {
+          currentHighlights = [];
+        }
+        document.getElementById("highlightCount").textContent = currentHighlights.length;
+        renderHighlights(currentHighlights);
+      });
+
+    const music = document.getElementById("bgMusic");
+    const musicText = document.getElementById("musicText");
+
+    function unlockAudioAndEnter() {
+      document.getElementById("enterGate").classList.add("hidden");
+      music.play().then(() => {
+        musicText.textContent = "pause music";
+      }).catch(() => {});
+    }
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play();
+        musicText.textContent = "pause music";
+      } else {
+        music.pause();
+        musicText.textContent = "play music !";
+      }
+    }
+
+    function renderHighlights(hl) {
+      const bar = document.getElementById("highlightsBar");
+      bar.innerHTML = "";
+      if (!hl || !hl.length) {
+        bar.innerHTML = `<span style="font-size:12px; color:var(--text-muted); padding:4px;">ยังไม่มีไฮไลท์</span>`;
+        return;
+      }
+      hl.forEach((item, idx) => {
+        const cover = item.cover || (item.images && item.images[0]) || "https://files.catbox.moe/ktnhex.jpeg";
+        const div = document.createElement("div");
+        div.className = "highlight-item";
+        div.onclick = () => openStory(idx);
+        div.innerHTML = `
+          <div class="highlight-ring"><img class="highlight-thumb" src="${cover}"></div>
+          <div class="highlight-name">${item.title || 'Review'}</div>
+        `;
+        bar.appendChild(div);
+      });
+    }
+
+    function renderPosts(posts) {
+      const grid = document.getElementById("postsGrid");
+      grid.innerHTML = "";
+      if (!posts || !posts.length) {
+        grid.innerHTML = `<div style="grid-column: span 3; text-align:center; color:var(--text-muted); font-size:13px; padding:20px;">ยังไม่มีโพสต์รูปภาพ</div>`;
+        document.getElementById("postCount").textContent = "0";
+        return;
+      }
+      posts.forEach(p => {
+        if (!p.image) return;
+        const card = document.createElement("div");
+        card.className = "post-card";
+        card.onclick = () => openPostModal(p);
+        card.innerHTML = `<img src="${p.image}">`;
+        grid.appendChild(card);
+      });
+      document.getElementById("postCount").textContent = posts.filter(p => p.image).length;
+    }
+
+    function openPostModal(post) {
+      document.getElementById("postModalImg").src = post.image;
+      document.getElementById("postModalCaption").textContent = post.caption || "";
+      document.getElementById("postModal").classList.add("show");
+    }
+    function closePostModal() {
+      document.getElementById("postModal").classList.remove("show");
+    }
+
+    function setStars(val) {
+      selectedRating = val;
+      const btns = document.querySelectorAll('.star-btn');
+      btns.forEach((btn, idx) => {
+        if (idx < val) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    async function submitCustomerReview() {
+      const name = document.getElementById("custName").value.trim();
+      const msg = document.getElementById("custMsg").value.trim();
+      const btn = document.getElementById("submitReviewBtn");
+
+      if (!name || !msg) {
+        alert("กรุณากรอกชื่อและข้อความรีวิวด้วยนะคะ ♡");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "กำลังส่งรีวิว...";
+      try {
+        await db.collection(DB_REVIEWS).add({
+          name: name,
+          msg: msg,
+          stars: selectedRating,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById("custName").value = "";
+        document.getElementById("custMsg").value = "";
+        setStars(5);
+        alert("ขอบคุณสำหรับรีวิวนะคะ ♡");
+      } catch (e) {
+        alert("เกิดข้อผิดพลาด ลองใหม่อีกครั้งนะคะ");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "ส่งรีวิว ♡";
+      }
+    }
+
+    // ดึงรีวิวแบบ Real-time
+    db.collection(DB_REVIEWS).orderBy("createdAt", "desc").onSnapshot(snap => {
+      const list = document.getElementById("feedbackList");
+      list.innerHTML = "";
+      if (snap.empty) {
+        list.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:10px;">ยังไม่มีรีวิว มารีวิวเป็นคนแรกได้เลยนะคะ ♡</div>`;
+        return;
+      }
+      snap.forEach(doc => {
+        const d = doc.data();
+        const card = document.createElement("div");
+        card.className = "review-card";
+        
+        let starsSvg = '';
+        for (let i = 0; i < (d.stars || 5); i++) {
+          starsSvg += `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+        }
+
+        card.innerHTML = `
+          <div class="review-head">
+            <span class="review-name">${d.name}</span>
+            <div class="review-stars-box">${starsSvg}</div>
+          </div>
+          <div class="review-msg">${d.msg}</div>
+        `;
+        list.appendChild(card);
+      });
+    });
+
+    // Story Fullscreen System (HD Images)
+    function openStory(idx) {
+      activeHighlightIdx = idx;
+      activeStoryImgIdx = 0;
+      const hl = currentHighlights[idx];
+      if (!hl || !hl.images || !hl.images.length) {
+        alert("ไฮไลท์นี้ยังไม่มีรูปภาพค่ะ ♡");
+        return;
+      }
+      document.getElementById("storyTitleText").textContent = hl.title || 'Highlight';
+      buildStoryBars();
+      showStoryImage();
+      document.getElementById("storyModal").classList.add("show");
+    }
+
+    function buildStoryBars() {
+      const hl = currentHighlights[activeHighlightIdx];
+      const bars = document.getElementById("storyBars");
+      bars.innerHTML = "";
+      hl.images.forEach((_, i) => {
+        const bar = document.createElement("div");
+        bar.className = "story-bar";
+        bar.innerHTML = `<div class="story-bar-fill" id="sbar-${i}"></div>`;
+        bars.appendChild(bar);
+      });
+    }
+
+    function showStoryImage() {
+      clearTimeout(storyTimer);
+      const hl = currentHighlights[activeHighlightIdx];
+      const img = hl.images[activeStoryImgIdx];
+      document.getElementById("storyActiveImg").src = img;
+
+      hl.images.forEach((_, i) => {
+        const fill = document.getElementById(`sbar-${i}`);
+        if (!fill) return;
+        if (i < activeStoryImgIdx) {
+          fill.style.width = "100%";
+        } else if (i === activeStoryImgIdx) {
+          fill.style.width = "0%";
+          setTimeout(() => { fill.style.width = "100%"; }, 50);
+        } else {
+          fill.style.width = "0%";
+        }
+      });
+
+      storyTimer = setTimeout(() => { nextStory(); }, 5000);
+    }
+
+    function nextStory() {
+      const hl = currentHighlights[activeHighlightIdx];
+      if (activeStoryImgIdx < hl.images.length - 1) {
+        activeStoryImgIdx++;
+        showStoryImage();
+      } else {
+        closeStory();
+      }
+    }
+
+    function prevStory() {
+      if (activeStoryImgIdx > 0) {
+        activeStoryImgIdx--;
+        showStoryImage();
+      }
+    }
+
+    function closeStory() {
+      clearTimeout(storyTimer);
+      document.getElementById("storyModal").classList.remove("show");
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      event.currentTarget.classList.add("active");
+      document.getElementById(`tab-${tabId}`).classList.add("active");
+    }
+
+    // สร้างลูกเล่นลอย 🤍 สลับกับ PNG
+    const floatLayer = document.getElementById("floatingLayer");
+    const customFloatPng = "https://files.catbox.moe/wy0od1.png";
+
+    function spawnFloatItem() {
+      const isPng = Math.random() > 0.5;
+      const el = document.createElement(isPng ? "img" : "div");
+      
+      if (isPng) {
+        el.src = customFloatPng;
+        el.className = "float-item float-item-png";
+      } else {
+        el.textContent = "🤍";
+        el.className = "float-item float-item-emoji";
+      }
+
+      el.style.left = (Math.random() * 90) + "vw";
+      el.style.animationDuration = (8 + Math.random() * 5) + "s";
+      floatLayer.appendChild(el);
+      setTimeout(() => el.remove(), 14000);
+    }
+    setInterval(spawnFloatItem, 1500);
+  </script>
+</body>
+</html>
