@@ -19,17 +19,17 @@
 
   <style>
     :root {
-      --pastel-pink: #f9a8d4;
-      --pastel-blue: #bae6fd;
-      --pastel-lavender: #ddd6fe;
-      --pink-main: #f47291;
-      --blue-main: #38bdf8;
-      --card-bg: rgba(255, 255, 255, 0.94);
-      --border-pink: #ffd6e0;
-      --border-soft: #e0e7ff;
-      --text-main: #3d354a;
-      --text-muted: #7c728e;
-      --glow-soft: 0 10px 28px rgba(244, 114, 145, 0.18), 0 4px 15px rgba(56, 189, 248, 0.15);
+      /* โค้ดสีตามพาเลตต์ */
+      --c-lightest: #fffafd;
+      --c-soft: #f7e7f0;
+      --c-border: #e9d2de;
+      --c-main: #d9b8c5;
+      
+      --c-deep: #b58d9e;
+      --card-bg: rgba(255, 250, 253, 0.94);
+      --text-main: #4d3d44;
+      --text-muted: #8c737e;
+      --glow-soft: 0 10px 28px rgba(217, 184, 197, 0.35);
     }
 
     * {
@@ -42,7 +42,7 @@
     }
 
     body {
-      background: radial-gradient(circle at top left, #e0f2fe 0%, #fdf2f8 40%, #fef9c3 70%, #ede9fe 100%);
+      background: radial-gradient(circle at top, #fffafd 0%, #f7e7f0 55%, #eddbe5 100%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -51,11 +51,11 @@
       position: relative;
     }
 
-    /* Welcome Gate แตะเพื่อเริ่มเพลงทันที */
+    /* Welcome Gate แตะเพื่อเริ่มเพลงทันที 100% */
     .enter-gate {
       position: fixed;
       inset: 0;
-      background: rgba(255, 245, 247, 0.94);
+      background: rgba(255, 250, 253, 0.96);
       backdrop-filter: blur(14px);
       z-index: 999999;
       display: flex;
@@ -69,7 +69,7 @@
     
     .enter-card {
       background: #ffffff;
-      border: 2px solid var(--pastel-pink);
+      border: 2px solid var(--c-border);
       border-radius: 28px;
       padding: 30px 24px;
       text-align: center;
@@ -86,11 +86,11 @@
       padding: 12px;
       border-radius: 22px;
       border: none;
-      background: linear-gradient(135deg, var(--pastel-pink), var(--blue-main));
+      background: linear-gradient(135deg, var(--c-main), var(--c-deep));
       color: #fff;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 6px 18px rgba(181, 141, 158, 0.35);
     }
 
     /* ลูกเล่นลอย 🤍 & PNG */
@@ -112,11 +112,11 @@
       width: 44px;
       height: 44px;
       object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(244, 114, 145, 0.3));
+      filter: drop-shadow(0 4px 10px rgba(217, 184, 197, 0.5));
     }
     .float-item-emoji {
       font-size: 24px;
-      filter: drop-shadow(0 4px 10px rgba(255, 255, 255, 0.8));
+      filter: drop-shadow(0 4px 10px rgba(255, 255, 255, 0.9));
     }
 
     @keyframes floatUp {
@@ -138,10 +138,10 @@
     .banner-box {
       width: 100%;
       height: 160px;
-      background: #f1f5f9;
+      background: var(--c-soft);
       overflow: hidden;
       position: relative;
-      border-bottom: 1.5px solid var(--border-pink);
+      border-bottom: 1.5px solid var(--c-border);
     }
     .banner-box img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -174,7 +174,7 @@
       z-index: 1;
       border: 3.5px solid #ffffff;
       background: #fff;
-      box-shadow: 0 4px 14px rgba(244, 114, 145, 0.3);
+      box-shadow: 0 4px 14px rgba(217, 184, 197, 0.45);
     }
     .discord-frame {
       position: absolute;
@@ -193,14 +193,14 @@
       margin-bottom: 12px;
     }
     .stat-item { text-align: center; }
-    .stat-num { font-weight: 700; font-size: 16px; color: var(--pink-main); }
+    .stat-num { font-weight: 700; font-size: 16px; color: var(--c-deep); }
     .stat-lbl { font-size: 11px; color: var(--text-muted); }
 
     .bio-box { margin-top: 14px; }
     .bio-username {
       font-size: 19px;
       font-weight: 700;
-      color: var(--pink-main);
+      color: var(--c-deep);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -211,10 +211,10 @@
       line-height: 1.6;
       margin-top: 8px;
       white-space: pre-line;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.85);
       padding: 10px 14px;
       border-radius: 18px;
-      border: 1px dashed var(--border-pink);
+      border: 1.5px dashed var(--c-border);
     }
 
     /* ปุ่มเพลง */
@@ -225,12 +225,12 @@
       margin-top: 10px;
       padding: 6px 16px;
       background: #ffffff;
-      border: 1.5px solid var(--border-pink);
+      border: 1.5px solid var(--c-border);
       border-radius: 20px;
       font-size: 12px;
-      color: var(--pink-main);
+      color: var(--c-deep);
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(244, 114, 145, 0.18);
+      box-shadow: 0 4px 12px rgba(217, 184, 197, 0.3);
       font-weight: 600;
     }
 
@@ -257,7 +257,7 @@
       height: 68px;
       border-radius: 50%;
       padding: 2.5px;
-      background: linear-gradient(135deg, var(--pastel-pink), var(--blue-main));
+      background: linear-gradient(135deg, var(--c-soft), var(--c-main));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -284,10 +284,10 @@
     /* 4 แท็บเมนู */
     .tabs-header {
       display: flex;
-      border-top: 1.5px solid var(--border-pink);
-      border-bottom: 1.5px solid var(--border-pink);
+      border-top: 1.5px solid var(--c-border);
+      border-bottom: 1.5px solid var(--c-border);
       margin-top: 10px;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 250, 253, 0.88);
       backdrop-filter: blur(8px);
     }
     .tab-btn {
@@ -303,8 +303,8 @@
       transition: all 0.2s;
     }
     .tab-btn.active {
-      color: var(--pink-main);
-      border-bottom: 2.5px solid var(--pink-main);
+      color: var(--c-deep);
+      border-bottom: 2.5px solid var(--c-deep);
       font-weight: 700;
     }
 
@@ -321,7 +321,7 @@
       position: relative;
       aspect-ratio: 1/1;
       overflow: hidden;
-      background: #fdf2f8;
+      background: var(--c-soft);
       cursor: pointer;
       border-radius: 6px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
@@ -333,7 +333,7 @@
     .review-section { display: flex; flex-direction: column; gap: 14px; }
     .review-form-card {
       background: var(--card-bg);
-      border: 1.5px solid var(--border-pink);
+      border: 1.5px solid var(--c-border);
       border-radius: 22px;
       padding: 18px 16px;
       box-shadow: var(--glow-soft);
@@ -342,7 +342,7 @@
     .form-title {
       font-size: 14px;
       font-weight: 700;
-      color: var(--pink-main);
+      color: var(--c-deep);
       margin-bottom: 10px;
       text-align: center;
     }
@@ -361,57 +361,57 @@
     .star-btn svg {
       width: 26px;
       height: 26px;
-      fill: #ffd8e1;
-      stroke: #fca5b9;
+      fill: #eddbe5;
+      stroke: var(--c-main);
       stroke-width: 1.2;
       transition: fill 0.15s, stroke 0.15s, transform 0.15s;
     }
     .star-btn.active svg {
-      fill: #f47291;
-      stroke: #e05879;
+      fill: var(--c-main);
+      stroke: var(--c-deep);
       transform: scale(1.1);
-      filter: drop-shadow(0 2px 6px rgba(244, 114, 145, 0.4));
+      filter: drop-shadow(0 2px 6px rgba(217, 184, 197, 0.6));
     }
 
     .review-input, .review-textarea {
       width: 100%;
       padding: 11px 14px;
       border-radius: 14px;
-      border: 1.5px solid var(--border-pink);
+      border: 1.5px solid var(--c-border);
       outline: none;
       font-size: 13px;
       background: #fff;
       color: var(--text-main);
       margin-bottom: 10px;
     }
-    .review-input:focus, .review-textarea:focus { border-color: var(--pink-main); }
+    .review-input:focus, .review-textarea:focus { border-color: var(--c-main); }
     
     .review-submit-btn {
       width: 100%;
       padding: 12px;
       border-radius: 18px;
       border: none;
-      background: linear-gradient(135deg, var(--pastel-pink), var(--blue-main));
+      background: linear-gradient(135deg, var(--c-main), var(--c-deep));
       color: #fff;
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 4px 14px rgba(181, 141, 158, 0.35);
     }
 
     .review-list { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
     .review-card {
       background: var(--card-bg);
-      border: 1px solid var(--border-pink);
+      border: 1px solid var(--c-border);
       border-radius: 18px;
       padding: 14px 16px;
-      box-shadow: 0 4px 14px rgba(244, 114, 145, 0.08);
+      box-shadow: 0 4px 14px rgba(217, 184, 197, 0.2);
       backdrop-filter: blur(8px);
     }
     .review-head { display: flex; justify-content: space-between; align-items: center; }
     .review-name { font-size: 13.5px; font-weight: 700; color: var(--text-main); }
     .review-stars-box { display: flex; gap: 3px; }
-    .review-stars-box svg { width: 14px; height: 14px; fill: #f47291; }
+    .review-stars-box svg { width: 14px; height: 14px; fill: var(--c-main); }
     .review-msg {
       font-size: 12.5px;
       color: var(--text-muted);
@@ -423,7 +423,7 @@
     /* แท็บ 3: Details */
     .details-box {
       background: var(--card-bg);
-      border: 1.5px solid var(--border-pink);
+      border: 1.5px solid var(--c-border);
       border-radius: 22px;
       padding: 20px 18px;
       line-height: 1.75;
@@ -438,7 +438,7 @@
       align-items: center;
       justify-content: space-between;
       background: #ffffff;
-      border: 1.5px solid var(--pastel-blue);
+      border: 1.5px solid var(--c-border);
       border-radius: 18px;
       padding: 14px 18px;
       text-decoration: none;
@@ -446,7 +446,7 @@
       font-weight: 700;
       font-size: 14px;
       margin-top: 14px;
-      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.15);
+      box-shadow: 0 4px 14px rgba(217, 184, 197, 0.3);
       transition: transform 0.2s;
     }
     .details-link-card:active { transform: scale(0.97); }
@@ -455,7 +455,7 @@
     .contact-box { display: flex; flex-direction: column; gap: 12px; }
     .contact-card-link {
       background: var(--card-bg);
-      border: 1.5px solid var(--border-pink);
+      border: 1.5px solid var(--c-border);
       border-radius: 20px;
       padding: 16px 20px;
       display: flex;
@@ -541,7 +541,7 @@
     .post-modal.show { display: flex; }
     .post-modal-card {
       background: #fff;
-      border: 2px solid var(--pastel-pink);
+      border: 2px solid var(--c-border);
       border-radius: 24px;
       overflow: hidden;
       max-width: 360px;
@@ -557,8 +557,8 @@
       padding: 10px;
       border-radius: 16px;
       border: none;
-      background: #fff0f3;
-      color: var(--pink-main);
+      background: var(--c-soft);
+      color: var(--c-deep);
       font-weight: 700;
       cursor: pointer;
     }
@@ -569,7 +569,7 @@
   <!-- เข้าเว็บเพื่อเล่นเพลง -->
   <div class="enter-gate" id="enterGate" onclick="unlockAudioAndEnter()">
     <div class="enter-card">
-      <h2 style="font-size: 19px; color: var(--pink-main);" id="gateTitle">babejeanstore ♡</h2>
+      <h2 style="font-size: 19px; color: var(--c-deep);" id="gateTitle">babejeanstore ♡</h2>
       <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">แตะเพื่อเข้าชมร้านค้าและเริ่มเล่นเพลง</p>
       <button type="button" class="enter-btn">Go to website ♡</button>
     </div>
@@ -663,10 +663,10 @@
     <!-- แท็บ 3: Details -->
     <div class="tab-content" id="tab-details">
       <div class="details-box">
-        <div style="font-weight: 700; color: var(--pink-main); margin-bottom: 6px;">example work ⬇️</div>
+        <div style="font-weight: 700; color: var(--c-deep); margin-bottom: 6px;">example work ⬇️</div>
         <a href="https://drive.google.com/drive/folders/1809dQnoaVJlvUHhzGbXJHmJ_Ai-JXkYu" target="_blank" class="details-link-card" id="detailsLinkBox">
           <span>📁 ตัวอย่างผลงานร้านค้า (Google Drive)</span>
-          <span style="color: var(--blue-main);">➔</span>
+          <span style="color: var(--c-deep);">➔</span>
         </a>
       </div>
     </div>
@@ -676,7 +676,7 @@
       <div class="contact-box" id="contactLinks">
         <a href="https://lin.ee/o8VdHV5" target="_blank" class="contact-card-link" id="contactLink1">
           <span>💬 line office ( @841xabwb )</span>
-          <span style="color: var(--blue-main);">➔</span>
+          <span style="color: var(--c-deep);">➔</span>
         </a>
       </div>
     </div>
@@ -818,7 +818,7 @@
       const grid = document.getElementById("postsGrid");
       grid.innerHTML = "";
       if (!posts || !posts.length) {
-        grid.innerHTML = `<div style="grid-column: span 3; text-align:center; color:var(--text-muted); font-size:13px; padding:20px;">ยังไม่มีโพสต์รูปภาพ</div>`;
+        grid.innerHTML = `<div style="grid-column: span 3; text-align:center; color:var(--text-muted); font-size:13px; padding:20px;">ยังไม่มีโพสต์รูปภาพ (เพิ่มได้จากระบบหลังบ้าน)</div>`;
         document.getElementById("postCount").textContent = "0";
         return;
       }
@@ -985,8 +985,8 @@
     function switchTab(tabId) {
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      event.currentTarget.classList.add("active");
-      document.getElementById(`tab-${tabId}`).classList.add("active");
+      event.currentTarget.classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
     }
 
     // สร้างลูกเล่นลอย 🤍 สลับกับ PNG
